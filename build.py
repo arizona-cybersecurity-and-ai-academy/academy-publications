@@ -143,6 +143,55 @@ def build_grants(grants: list[dict]) -> str:
     return "<ul class=\"academy-grants\">\n" + "\n".join(rows) + "\n</ul>\n"
 
 
+def html_to_md(s: str) -> str:
+    """Convert Zotero's CSL HTML for one entry into Markdown the Arizona Sites editor accepts."""
+    s = re.sub(r"</?div[^>]*>", "", s)
+    s = re.sub(r"<i>(.*?)</i>", r"*\1*", s, flags=re.S)
+    s = re.sub(r"<b>(.*?)</b>", r"**\1**", s, flags=re.S)
+    s = re.sub(r'<a href="([^"]+)">(.*?)</a>', lambda m: f"[{html.unescape(m.group(2))}]({m.group(1)})", s, flags=re.S)
+    s = re.sub(r"<[^>]+>", "", s)
+    s = html.unescape(s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def build_md(items: list[dict]) -> str:
+    by_year: dict[str, list[dict]] = defaultdict(list)
+    for it in items:
+        by_year[year_of(it)].append(it)
+    years = sorted(by_year, key=lambda y: (y != "Undated", y), reverse=True)
+    out: list[str] = []
+    for y in years:
+        out.append(f"### {y}\n")
+        for it in sorted(by_year[y], key=title_key):
+            out.append(f"- {html_to_md(strip_bib_wrapper(it.get('bib', '')))}")
+        out.append("")
+    return "\n".join(out).rstrip() + "\n"
+
+
+def build_grants_md(grants: list[dict]) -> str:
+    if not grants:
+        return ""
+    def start_year(g: dict) -> int:
+        m = re.search(r"\d{4}", str(g.get("years", "")))
+        return int(m.group(0)) if m else 0
+    out: list[str] = []
+    for g in sorted(grants, key=lambda g: (-start_year(g), str(g.get("title", "")).lower())):
+        sponsor = g.get("sponsor", "")
+        if g.get("prime"):
+            sponsor += f" (via {g['prime']})"
+        bits = [f"**{g.get('title', '')}**", sponsor, str(g.get("years", ""))]
+        if SHOW_AMOUNTS and g.get("amount") is not None:
+            bits.append(f"${float(g['amount']):,.0f}")
+        if g.get("role"):
+            bits.append(str(g["role"]))
+        line = ". ".join(b for b in bits if b) + "."
+        if g.get("note"):
+            line += f" {g['note']}"
+        out.append(f"- {line}")
+    return "\n".join(out) + "\n"
+
+
 def main() -> int:
     items = all_items()
     if not items:
@@ -156,6 +205,10 @@ def main() -> int:
         f.write(fragment)
     with open("docs/grants-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(grants_fragment)
+    with open("docs/publications.md", "w", encoding="utf-8", newline="\n") as f:
+        f.write(build_md(items))
+    with open("docs/grants.md", "w", encoding="utf-8", newline="\n") as f:
+        f.write(build_grants_md(load_grants()))
     if grants_fragment:
         stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         with open("docs/grants.html", "w", encoding="utf-8", newline="\n") as f:

@@ -17,4 +17,4 @@ ZOTERO_API_KEY=... python build.py
 
 ## Updating the site
 
-Arizona Sites (Quickstart) cannot load modules, so the page is maintained by hand from this output. Either paste `docs/publications-fragment.html` into the page, or, if the editor allows an embed, point it at the published `docs/index.html`.
+Arizona Sites (Quickstart) cannot load modules, so the page is maintained by hand from this output. The editor accepts Markdown and nothing more technical (Veronika Kyles, 2026-09-10), so the files to paste are `docs/publications.md` and `docs/grants.md`; the site applies its own theme. The HTML outputs are kept for any future embed option.

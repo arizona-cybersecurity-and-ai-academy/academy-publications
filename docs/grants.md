@@ -1,0 +1,14 @@
+- **AZ Cyber Pathways Research Practice Partnership**. National Science Foundation. 2025. $279,310. Erwin, C. (PI); Caspary, K. (Co-PI); Wagner, P. (Key Personnel).
+- **CyberAI Curriculum Mapping and CLARK Development**. National Security Agency (via Towson University). 2025. $75,193. Wagner, P. (PI); Honomichl, R., Straight, R., Xu, S., Xu, L. (Co-PIs).
+- **Security Control Assessor and Vulnerability Assessment Analyst work-role training (CyberSkills2Work)**. United States Department of Defense (via University of West Florida). 2025-2028. $311,601. Wagner, P. (PI); Xu, S. (Co-PI).
+- **Southern Arizona Cybersecurity Workforce Alliance (RAMPS)**. National Institute of Standards and Technology. 2025. $199,100. Felix, M. (PI); Bevington, A., Ball, A. (Co-PIs); Keely, J., Wagner, P. (Key Personnel).
+- **2024 DoD Cyber Scholarship Program and Capacity Building: Security Assessments for Experiential Learning in Ecosystems with Area and Regional Needs (SAFE LEARN)**. National Security Agency. 2024-2026. $342,794. Denno, J. (PI); Lucero, A. (Co-PI); Wagner, P. (Key Personnel, PI SAFE LEARN); Honomichl, R. (Key Personnel, Co-PI SAFE LEARN). $146,760 of the award is allocated to SAFE LEARN.
+- **2024 DoD GenCyber Grant**. National Security Agency (via Dakota State University). 2024-2026. $89,973. Honomichl, R. (PI); Wagner, P. (Co-PI).
+- **Arizona Cybersecurity Academy: K-20+ Education, Training and Awareness, Workforce Development, Research, and Policy**. Institute of Computation and Data Enabled Insight (ICDI), University of Arizona. 2024-2025. $40,000. Wagner, P. (PI, Founder, Director).
+- **National Cybersecurity Teaching Academy 3.0**. National Security Agency (via University of Arkansas at Little Rock). 2024-2027. $827,219. Wagner, P. (PI); Honomichl, R. (Co-PI); Kontak, N. (Key Personnel).
+- **Research Leadership Institute Seed Funding to Support 10-Year Plan**. Research, Innovation, and Impact (RII), University of Arizona. 2024. $7,500. Wagner, P. (PI).
+- **Supporting Communities and Small Businesses by Conducting Risk and Vulnerability Assessments through Student Experiential Learning Opportunities (Arizona Cybersecurity Clinic)**. Google (Tides Foundation). 2024-2030. $1,000,000. Wagner, P. (PI); Honomichl, R., Mapp, W., Xu, S. (Co-PIs); Kontak, N. (Key Personnel).
+- **The 502 Project: Building Gateways to the Cybersecurity Community**. National Security Agency (via University of South Florida). 2024. $29,988. Wagner, P. (PI).
+- **Arizona CyberPatriot Camps**. Center for the Future of Arizona. 2023. $30,000. Wagner, P. (PI).
+- **CyberSupply Data Collection Project**. Center for the Future of Arizona. 2023. $6,500. Wagner, P. (PI).
+- **Middle School CTE Accelerator**. Luminary Labs LLC. 2023-2024. $85,000. Honomichl, R. (PI); Wagner, P. (Co-PI).
