@@ -1,6 +1,6 @@
 # Academy publications page
 
-Generates the research lists for the Arizona Cybersecurity and AI Academy website from the Academy's Zotero group library (group 6382800). Three collections feed three lists:
+Generates the research lists for the Arizona Cybersecurity Academy website from the Academy's Zotero group library (group 6382800). Three collections feed three lists:
 
 | List | Zotero collection | Output files |
 |---|---|---|
