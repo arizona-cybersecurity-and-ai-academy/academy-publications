@@ -16,6 +16,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: pip install pyyaml
       - name: Build from Zotero
         env:
           ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}

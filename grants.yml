@@ -1,0 +1,138 @@
+# Arizona Cybersecurity Academy: awarded grants and contracts.
+# Source: Paul Wagner's CV (June 2026), "Awarded Grants and Contracts", transcribed 2026-09-10 by Mina for Ryan Straight.
+# Ryan's presumption is that these match the Academy proposal; the proposal was not itemised in what we hold, so the CV is the source of record here.
+# Only AWARDED grants are listed. Pending and not-funded submissions stay off the public page by design.
+# `show: true` puts the row on the website; pre-Academy awards (before 2023) are kept for the record with show: false.
+# `amount` is the total award as printed on the CV; whether amounts appear on the site is the team's call (see build.py SHOW_AMOUNTS).
+# Add new awards at the top. Fields: title, sponsor, prime (pass-through institution, if any), years, amount, role (Academy people and roles), show.
+
+- title: "AZ Cyber Pathways Research Practice Partnership"
+  sponsor: "National Science Foundation"
+  prime: ""
+  years: "2025"
+  amount: 279310
+  role: "Erwin, C. (PI); Caspary, K. (Co-PI); Wagner, P. (Key Personnel)"
+  show: true
+
+- title: "Southern Arizona Cybersecurity Workforce Alliance (RAMPS)"
+  sponsor: "National Institute of Standards and Technology"
+  prime: ""
+  years: "2025"
+  amount: 199100
+  role: "Felix, M. (PI); Bevington, A., Ball, A. (Co-PIs); Keely, J., Wagner, P. (Key Personnel)"
+  show: true
+
+- title: "CyberAI Curriculum Mapping and CLARK Development"
+  sponsor: "National Security Agency"
+  prime: "Towson University"
+  years: "2025"
+  amount: 75193
+  role: "Wagner, P. (PI); Honomichl, R., Straight, R., Xu, S., Xu, L. (Co-PIs)"
+  show: true
+
+- title: "Security Control Assessor and Vulnerability Assessment Analyst work-role training (CyberSkills2Work)"
+  sponsor: "United States Department of Defense"
+  prime: "University of West Florida"
+  years: "2025-2028"
+  amount: 311601
+  role: "Wagner, P. (PI); Xu, S. (Co-PI)"
+  show: true
+
+- title: "2024 DoD GenCyber Grant"
+  sponsor: "National Security Agency"
+  prime: "Dakota State University"
+  years: "2024-2026"
+  amount: 89973.17
+  role: "Honomichl, R. (PI); Wagner, P. (Co-PI)"
+  show: true
+
+- title: "National Cybersecurity Teaching Academy 3.0"
+  sponsor: "National Security Agency"
+  prime: "University of Arkansas at Little Rock"
+  years: "2024-2027"
+  amount: 827218.90
+  role: "Wagner, P. (PI); Honomichl, R. (Co-PI); Kontak, N. (Key Personnel)"
+  show: true
+
+- title: "The 502 Project: Building Gateways to the Cybersecurity Community"
+  sponsor: "National Security Agency"
+  prime: "University of South Florida"
+  years: "2024"
+  amount: 29988
+  role: "Wagner, P. (PI)"
+  show: true
+
+- title: "2024 DoD Cyber Scholarship Program and Capacity Building: Security Assessments for Experiential Learning in Ecosystems with Area and Regional Needs (SAFE LEARN)"
+  sponsor: "National Security Agency"
+  prime: ""
+  years: "2024-2026"
+  amount: 342793.68
+  role: "Denno, J. (PI); Lucero, A. (Co-PI); Wagner, P. (Key Personnel, PI SAFE LEARN); Honomichl, R. (Key Personnel, Co-PI SAFE LEARN)"
+  note: "$146,760 of the award is allocated to SAFE LEARN."
+  show: true
+
+- title: "Supporting Communities and Small Businesses by Conducting Risk and Vulnerability Assessments through Student Experiential Learning Opportunities (Arizona Cybersecurity Clinic)"
+  sponsor: "Google (Tides Foundation)"
+  prime: ""
+  years: "2024-2030"
+  amount: 1000000
+  role: "Wagner, P. (PI); Honomichl, R., Mapp, W., Xu, S. (Co-PIs); Kontak, N. (Key Personnel)"
+  show: true
+
+- title: "Arizona Cybersecurity Academy: K-20+ Education, Training and Awareness, Workforce Development, Research, and Policy"
+  sponsor: "Institute of Computation and Data Enabled Insight (ICDI), University of Arizona"
+  prime: ""
+  years: "2024-2025"
+  amount: 40000
+  role: "Wagner, P. (PI, Founder, Director)"
+  show: true
+
+- title: "Research Leadership Institute Seed Funding to Support 10-Year Plan"
+  sponsor: "Research, Innovation, and Impact (RII), University of Arizona"
+  prime: ""
+  years: "2024"
+  amount: 7500
+  role: "Wagner, P. (PI)"
+  show: true
+
+- title: "CyberSupply Data Collection Project"
+  sponsor: "Center for the Future of Arizona"
+  prime: ""
+  years: "2023"
+  amount: 6500
+  role: "Wagner, P. (PI)"
+  show: true
+
+- title: "Middle School CTE Accelerator"
+  sponsor: "Luminary Labs LLC"
+  prime: ""
+  years: "2023-2024"
+  amount: 85000
+  role: "Honomichl, R. (PI); Wagner, P. (Co-PI)"
+  show: true
+
+- title: "Arizona CyberPatriot Camps"
+  sponsor: "Center for the Future of Arizona"
+  prime: ""
+  years: "2023"
+  amount: 30000
+  role: "Wagner, P. (PI)"
+  show: true
+
+# Pre-Academy awards, kept for the record, not shown.
+
+- title: "Building Cybersecurity for Bluetooth Networks, Industrial Control Systems, and Critical Infrastructure"
+  sponsor: "University of Arizona Provost Investment Fund"
+  prime: ""
+  years: "2020-2021"
+  amount: 143000
+  role: "Denno, J. (PI); Wagner, P. (Co-PI, Research Lead)"
+  show: false
+
+- title: "Visualization and Analysis of Distributed Denial of Service Attacks on Software Defined Networks"
+  sponsor: "National Security Agency"
+  prime: ""
+  years: "2018-2019"
+  amount: 423722.54
+  role: "Denno, J. (PI); Wagner, P. (Co-PI, Research Lead)"
+  show: false

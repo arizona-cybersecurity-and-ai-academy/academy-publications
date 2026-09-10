@@ -104,17 +104,63 @@ def build(items: list[dict]) -> tuple[str, str]:
     return page, fragment
 
 
+SHOW_AMOUNTS = os.environ.get("SHOW_AMOUNTS", "1") == "1"
+
+
+def load_grants(path: str = "grants.yml") -> list[dict]:
+    if not os.path.exists(path):
+        return []
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        print("pyyaml not installed; skipping grants", file=sys.stderr)
+        return []
+    with open(path, encoding="utf-8") as f:
+        data = yaml.safe_load(f) or []
+    return [g for g in data if g.get("show", True)]
+
+
+def build_grants(grants: list[dict]) -> str:
+    if not grants:
+        return ""
+    def start_year(g: dict) -> int:
+        m = re.search(r"\d{4}", str(g.get("years", "")))
+        return int(m.group(0)) if m else 0
+    rows: list[str] = []
+    for g in sorted(grants, key=lambda g: (-start_year(g), str(g.get("title", "")).lower())):
+        sponsor = g.get("sponsor", "")
+        if g.get("prime"):
+            sponsor += f" (via {g['prime']})"
+        bits = [f"<strong>{html.escape(str(g.get('title', '')))}</strong>", html.escape(sponsor), html.escape(str(g.get("years", "")))]
+        if SHOW_AMOUNTS and g.get("amount") is not None:
+            bits.append(f"${float(g['amount']):,.0f}")
+        if g.get("role"):
+            bits.append(html.escape(str(g["role"])))
+        line = ". ".join(b for b in bits if b)
+        if g.get("note"):
+            line += f" <span class=\"note\">{html.escape(str(g['note']))}</span>"
+        rows.append(f"  <li>{line}.</li>")
+    return "<ul class=\"academy-grants\">\n" + "\n".join(rows) + "\n</ul>\n"
+
+
 def main() -> int:
     items = all_items()
     if not items:
         print("no items in collection; writing an empty list", file=sys.stderr)
     page, fragment = build(items)
+    grants_fragment = build_grants(load_grants())
     os.makedirs("docs", exist_ok=True)
     with open("docs/index.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(page)
     with open("docs/publications-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(fragment)
-    print(f"wrote {len(items)} entries")
+    with open("docs/grants-fragment.html", "w", encoding="utf-8", newline="\n") as f:
+        f.write(grants_fragment)
+    if grants_fragment:
+        stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        with open("docs/grants.html", "w", encoding="utf-8", newline="\n") as f:
+            f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Grants and Contracts</h1>\n<p class=\"meta\">Awarded grants and contracts. Generated {stamp}.</p>\n" + grants_fragment + "</body>\n</html>\n")
+    print(f"wrote {len(items)} publications, {grants_fragment.count('<li>')} grants")
     return 0
 
 
