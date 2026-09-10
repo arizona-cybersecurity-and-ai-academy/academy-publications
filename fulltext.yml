@@ -1,0 +1,3 @@
+# Manual full-text overrides. Key = DOI (lower-case) or Zotero item key; value = URL to the open full text.
+# Checked before Unpaywall, so use this for items Unpaywall does not know (book chapters, OER, reports) or where its guess is wrong.
+# Leave a key out rather than pointing at a paywall; the page only links full text that is actually open.
