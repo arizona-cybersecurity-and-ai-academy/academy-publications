@@ -17,7 +17,7 @@
 
 ### 2022
 
-- Straight, R. (2022, May 2). *Cybersecurity, Education, and Technological Mediation*. [https://ryanstraight.com/talks/the-xf-framework](https://ryanstraight.com/talks/the-xf-framework) [UA access](https://ezproxy.library.arizona.edu/login?url=https://ryanstraight.com/talks/the-xf-framework)
+- Straight, R. (2022, May 2). *Cybersecurity, Education, and Technological Mediation*. [https://ryanstraight.com/talks/the-xf-framework](https://ryanstraight.com/talks/the-xf-framework)
     A Talk for Women in Cyber Security (WiCyS)
 
 ### Undated

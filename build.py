@@ -79,7 +79,8 @@ def build(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict
             if ft:
                 if ft not in entry:
                     entry += f' <a href="{html.escape(ft)}">{html.escape(ft)}</a>'
-                entry += f' <a class="proxy" href="{html.escape(proxied(ft))}">[UA access]</a>'
+                if ft.startswith("https://doi.org/"):
+                    entry += f' <a class="proxy" href="{html.escape(proxied(ft))}">[UA access]</a>'
             gl = grant_labels(it, grants_by_id)
             if gl:
                 entry += f'<div class="grant">Output of: {html.escape("; ".join(gl))}.</div>'
@@ -235,7 +236,8 @@ def build_md(items: list[dict], links: dict[str, str], grants_by_id: dict[str, d
             if ft:
                 if ft not in line:
                     line += f" [{ft}]({ft})"
-                line += f" [UA access]({proxied(ft)})"
+                if ft.startswith("https://doi.org/"):   # the proxy twin only makes sense for publisher-of-record links
+                    line += f" [UA access]({proxied(ft)})"
             out.append(f"- {line}")
             gl = grant_labels(it, grants_by_id)
             if gl:
