@@ -52,6 +52,9 @@
 
 - Straight, R., Wagner, P., Honomichl, R., & Xu, S. (2026). WIP: Clinic-In-A-Box: AI-Powered Stakeholder Simulation for Cybersecurity Education. *Proceedings of the 56th IEEE Frontiers in Education Conference*. IEEE Frontiers in Education. [https://fie-conference.org/2026](https://fie-conference.org/2026)
 
+    > This work-in-progress innovative practice category paper presents Clinic-in-a-Box (CiaB), an AI-powered stakeholder simulation system designed to strengthen communication skill development in cybersecurity clinic education. Cybersecurity clinic programs require students to engage with diverse organizational stakeholders, yet meaningful practice opportunities remain limited before real client interactions. CiaB addresses this gap by using large language models to create persistent, sector-specific stakeholder personas that maintain consistent organizational profiles across student interactions. The system currently supports four client types representing common consulting contexts and incorporates sector-specific security frameworks, persistent organizational memory, and comprehensive interaction logging for assessment. This paper describes the system architecture, its grounding in clinic-based learning and design science research, and preliminary development status. Planned evaluation includes expert persona review, comparative analysis against traditional role-play, and student perception surveys.
+
+
 ### 2025
 
 - Wagner, P., & Honomichl, R. (2025). Addressing the Critical Need for Experiential Learning within Cybersecurity Education. *2025 CAE in Cybersecurity Community Symposium, Cyber Defense Track Proceedings*. 2025 CAE in Cybersecurity Community Symposium. [https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_3d952ac09d53483db53a49b7cb327293.pdf](https://131b1d64-a91b-4e72-9201-2d47ce0a189a.filesusr.com/ugd/eeb746_3d952ac09d53483db53a49b7cb327293.pdf)
