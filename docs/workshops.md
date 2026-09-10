@@ -1,6 +1,8 @@
 ### 2026
 
 - Wagner, P., Honomichl, R., Xu, S., & Hu, X. (2026). *AI, Cybersecurity, and Digital Literacy Through Cybersecurity Clinics* [Workshop]. iConference 2026.
+- Wagner, P., & Honomichl, R. (2026). *Cybersecurity Awareness, AI and Digital Literacy for Libraries* [Workshop]. Yavapai County Library.
+- Honomichl, R., & Wagner, P. (2026). *Cybersecurity Awareness, AI, and Digital Literacy for Libraries* [Workshop]. Arizona State Summer Library Institute.
 
 ### 2025
 
@@ -19,8 +21,3 @@
 
 - Straight, R. (2022, May 2). *Cybersecurity, Education, and Technological Mediation*. [https://ryanstraight.com/talks/the-xf-framework](https://ryanstraight.com/talks/the-xf-framework)
     A Talk for Women in Cyber Security (WiCyS)
-
-### Undated
-
-- Wagner, P., & Honomichl, R. (n.d.). *Cybersecurity Awareness, AI and Digital Literacy for Libraries* [Workshop]. Yavapai County Library.
-- Honomichl, R., & Wagner, P. (n.d.). *Cybersecurity Awareness, AI, and Digital Literacy for Libraries* [Workshop]. Arizona State Summer Library Institute.
