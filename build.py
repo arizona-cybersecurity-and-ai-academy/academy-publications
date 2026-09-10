@@ -222,34 +222,73 @@ def html_to_md(s: str) -> str:
     return s
 
 
-def build_md(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict]) -> str:
+SECTIONS = [  # type-first, like the Eller AI Lab page; order is display order
+    ("Journal Articles", {"journalArticle"}),
+    ("Conference Papers", {"conferencePaper"}),
+    ("Books, Chapters, and Reports", {"book", "bookSection", "report", "thesis", "computerProgram", "document", "manuscript"}),
+]
+SECTIONED = os.environ.get("SECTIONS_BY_TYPE", "1") == "1"
+
+
+def award_labels(item: dict) -> list[str]:
+    """Tags `award:<text>` render inline after the citation, e.g. award:Best Paper Award, ISCAP 2023."""
+    return [str(t.get("tag", "")).split(":", 1)[1].strip() for t in item.get("data", {}).get("tags", []) if str(t.get("tag", "")).lower().startswith("award:")]
+
+
+def md_entry(it: dict, n: int, links: dict[str, str], grants_by_id: dict[str, dict]) -> list[str]:
+    line = html_to_md(strip_bib_wrapper(it.get("bib", "")))
+    ft = links.get(it.get("key", ""))
+    if ft:
+        if ft not in line:
+            line += f" [{ft}]({ft})"
+        if ft.startswith("https://doi.org/"):   # the proxy twin only makes sense for publisher-of-record links
+            line += f" [UA access]({proxied(ft)})"
+    for a in award_labels(it):
+        line += f" **{a}.**"
+    out = [f"{n}. {line}"]
+    gl = grant_labels(it, grants_by_id)
+    ab = abstract_of(it)
+    if gl or ab:
+        out.append("")   # a blank line so the blockquote nests inside the list item rather than running on
+    if gl:
+        out.append(f"    *Output of: {'; '.join(gl)}.*")
+        out.append("")
+    if ab:
+        out.append(f"    > {ab}")
+        out.append("")
+    return out
+
+
+def md_years(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict], level: str) -> list[str]:
     by_year: dict[str, list[dict]] = defaultdict(list)
     for it in items:
         by_year[year_of(it)].append(it)
     years = sorted(by_year, key=lambda y: (y != "Undated", y), reverse=True)
     out: list[str] = []
     for y in years:
-        out.append(f"### {y}\n")
-        for it in sorted(by_year[y], key=title_key):
-            line = html_to_md(strip_bib_wrapper(it.get("bib", "")))
-            ft = links.get(it.get("key", ""))
-            if ft:
-                if ft not in line:
-                    line += f" [{ft}]({ft})"
-                if ft.startswith("https://doi.org/"):   # the proxy twin only makes sense for publisher-of-record links
-                    line += f" [UA access]({proxied(ft)})"
-            out.append(f"- {line}")
-            gl = grant_labels(it, grants_by_id)
-            ab = abstract_of(it)
-            if gl or ab:
-                out.append("")   # a blank line so the blockquote nests inside the list item rather than running on
-            if gl:
-                out.append(f"    *Output of: {'; '.join(gl)}.*")
-                out.append("")
-            if ab:
-                out.append(f"    > {ab}")
-                out.append("")
+        out.append(f"{level} {y}\n")
+        for n, it in enumerate(sorted(by_year[y], key=title_key), 1):
+            out.extend(md_entry(it, n, links, grants_by_id))
         out.append("")
+    return out
+
+
+def build_md(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict], sectioned: bool = SECTIONED) -> str:
+    if not sectioned:
+        return "\n".join(md_years(items, links, grants_by_id, "###")).rstrip() + "\n"
+    out: list[str] = []
+    placed: set[str] = set()
+    for name, types in SECTIONS:
+        group = [it for it in items if it.get("data", {}).get("itemType") in types]
+        placed.update(it.get("key", "") for it in group)
+        if not group:
+            continue
+        out.append(f"## {name}\n")
+        out.extend(md_years(group, links, grants_by_id, "###"))
+    rest = [it for it in items if it.get("key", "") not in placed]
+    if rest:
+        out.append("## Other\n")
+        out.extend(md_years(rest, links, grants_by_id, "###"))
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -307,7 +346,7 @@ def main() -> int:
     wlinks = {it.get("key", ""): u for it in witems if (u := canonical_url(it, overrides))}
     _, wfragment = build(witems, wlinks, grants_by_id)
     with open("docs/workshops.md", "w", encoding="utf-8", newline="\n") as f:
-        f.write(build_md(witems, wlinks, grants_by_id) if witems else "")
+        f.write(build_md(witems, wlinks, grants_by_id, sectioned=False) if witems else "")
     with open("docs/workshops-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(wfragment if witems else "")
     with open("docs/workshops.html", "w", encoding="utf-8", newline="\n") as f:
