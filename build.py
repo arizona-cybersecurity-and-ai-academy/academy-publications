@@ -64,7 +64,7 @@ def strip_bib_wrapper(bib: str) -> str:
     return m.group(1).strip() if m else bib.strip()
 
 
-def build(items: list[dict], links: dict[str, str]) -> tuple[str, str]:
+def build(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict]) -> tuple[str, str]:
     by_year: dict[str, list[dict]] = defaultdict(list)
     for it in items:
         by_year[year_of(it)].append(it)
@@ -76,8 +76,16 @@ def build(items: list[dict], links: dict[str, str]) -> tuple[str, str]:
         for it in sorted(by_year[y], key=title_key):
             entry = strip_bib_wrapper(it.get("bib", ""))
             ft = links.get(it.get("key", ""))
-            if ft and ft not in entry:
-                entry += f' <a class="fulltext" href="{html.escape(ft)}">[Full text]</a>'
+            if ft:
+                if ft not in entry:
+                    entry += f' <a href="{html.escape(ft)}">{html.escape(ft)}</a>'
+                entry += f' <a class="proxy" href="{html.escape(proxied(ft))}">[UA access]</a>'
+            gl = grant_labels(it, grants_by_id)
+            if gl:
+                entry += f'<div class="grant">Output of: {html.escape("; ".join(gl))}.</div>'
+            ab = abstract_of(it)
+            if ab:
+                entry += f'<div class="abstract">{html.escape(ab)}</div>'
             parts.append(f"  <li>{entry}</li>")
             n += 1
         parts.append("</ul>")
@@ -97,6 +105,8 @@ def build(items: list[dict], links: dict[str, str]) -> tuple[str, str]:
   ul.academy-pubs li {{ margin: 0 0 .9rem 0; padding-left: 2rem; text-indent: -2rem; }}
   a {{ color: #0c234b; }}
   .meta {{ color: #555; font-size: .85rem; }}
+  .abstract {{ text-indent: 0; margin-top: .3rem; font-size: .92rem; color: #333; }}
+  .grant {{ text-indent: 0; margin-top: .3rem; font-size: .85rem; color: #555; font-style: italic; }}
 </style>
 </head>
 <body>
@@ -147,13 +157,16 @@ def build_grants(grants: list[dict]) -> str:
     return "<ul class=\"academy-grants\">\n" + "\n".join(rows) + "\n</ul>\n"
 
 
-OA_VENUE_PREFIXES = ("10.62915/", "10.62273/", "10.32727/", "10.21125/")   # JCERP, CPPJ, JCERP (old prefix), IATED (open proceedings)
-FULLTEXT_CACHE = "fulltext-cache.json"
+PROXY_PREFIX = os.environ.get("PROXY_PREFIX", "https://ezproxy.library.arizona.edu/login?url=")
 FULLTEXT_OVERRIDES = "fulltext.yml"
-UNPAYWALL_EMAIL = os.environ.get("UNPAYWALL_EMAIL", "ryanstraight@arizona.edu")
+
+
+def proxied(url: str) -> str:
+    return PROXY_PREFIX + url
 
 
 def load_overrides() -> dict[str, str]:
+    """Manual canonical-link overrides for records with no DOI and no usable URL (key = DOI or Zotero item key)."""
     if not os.path.exists(FULLTEXT_OVERRIDES):
         return {}
     try:
@@ -165,25 +178,8 @@ def load_overrides() -> dict[str, str]:
     return {str(k).lower(): str(v) for k, v in data.items() if v}
 
 
-def unpaywall(doi: str, cache: dict) -> str | None:
-    key = doi.lower()
-    if key in cache:
-        return cache[key] or None
-    url = None
-    try:
-        req = urllib.request.Request(f"https://api.unpaywall.org/v2/{urllib.parse.quote(doi)}?email={urllib.parse.quote(UNPAYWALL_EMAIL)}", headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            d = json.load(r)
-        loc = d.get("best_oa_location") or {}
-        url = loc.get("url_for_pdf") or loc.get("url")
-    except Exception as e:  # noqa: BLE001
-        print(f"unpaywall miss {doi}: {e}", file=sys.stderr)
-    cache[key] = url or ""
-    return url
-
-
-def fulltext_url(item: dict, cache: dict, overrides: dict[str, str]) -> str | None:
-    """Best available full-text link, in priority order: manual override, Unpaywall, open venue DOI, direct PDF URL."""
+def canonical_url(item: dict, overrides: dict[str, str]) -> str | None:
+    """The publisher-of-record link: manual override, else the DOI, else the record's own URL. No third-party resolvers."""
     data = item.get("data", {})
     doi = (data.get("DOI") or "").strip()
     key = item.get("key", "")
@@ -191,15 +187,26 @@ def fulltext_url(item: dict, cache: dict, overrides: dict[str, str]) -> str | No
         if k and k in overrides:
             return overrides[k]
     if doi:
-        u = unpaywall(doi, cache)
-        if u:
-            return u
-        if doi.lower().startswith(OA_VENUE_PREFIXES):
-            return f"https://doi.org/{doi}"
+        return f"https://doi.org/{doi}"
     url = (data.get("url") or "").strip()
-    if url.lower().endswith(".pdf") or "digitalcommons" in url or "/proceedings/" in url:
-        return url
-    return None
+    return url or None
+
+
+def grant_labels(item: dict, grants_by_id: dict[str, dict]) -> list[str]:
+    """Items tagged `grant:<id>` in Zotero are marked as direct outputs of that grant (ids come from grants.yml)."""
+    out = []
+    for t in item.get("data", {}).get("tags", []):
+        tag = str(t.get("tag", ""))
+        if tag.lower().startswith("grant:"):
+            gid = tag.split(":", 1)[1].strip().lower()
+            g = grants_by_id.get(gid)
+            out.append(g["title"] if g else gid)
+    return out
+
+
+def abstract_of(item: dict) -> str:
+    a = (item.get("data", {}).get("abstractNote") or "").strip()
+    return re.sub(r"\s+", " ", a)
 
 
 def html_to_md(s: str) -> str:
@@ -214,7 +221,7 @@ def html_to_md(s: str) -> str:
     return s
 
 
-def build_md(items: list[dict], links: dict[str, str]) -> str:
+def build_md(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict]) -> str:
     by_year: dict[str, list[dict]] = defaultdict(list)
     for it in items:
         by_year[year_of(it)].append(it)
@@ -225,11 +232,17 @@ def build_md(items: list[dict], links: dict[str, str]) -> str:
         for it in sorted(by_year[y], key=title_key):
             line = html_to_md(strip_bib_wrapper(it.get("bib", "")))
             ft = links.get(it.get("key", ""))
-            if ft and ft not in line:
-                line += f" [Full text]({ft})"
-            elif ft:
-                line += " (full text at the link above)"
+            if ft:
+                if ft not in line:
+                    line += f" [{ft}]({ft})"
+                line += f" [UA access]({proxied(ft)})"
             out.append(f"- {line}")
+            gl = grant_labels(it, grants_by_id)
+            if gl:
+                out.append(f"    *Output of: {'; '.join(gl)}.*")
+            ab = abstract_of(it)
+            if ab:
+                out.append(f"    {ab}")
         out.append("")
     return "\n".join(out).rstrip() + "\n"
 
@@ -261,16 +274,12 @@ def main() -> int:
     items = all_items()
     if not items:
         print("no items in collection; writing an empty list", file=sys.stderr)
-    cache: dict = {}
-    if os.path.exists(FULLTEXT_CACHE):
-        with open(FULLTEXT_CACHE, encoding="utf-8") as f:
-            cache = json.load(f)
     overrides = load_overrides()
-    links = {it.get("key", ""): u for it in items if (u := fulltext_url(it, cache, overrides))}
-    with open(FULLTEXT_CACHE, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(cache, f, indent=1, sort_keys=True)
-    page, fragment = build(items, links)
-    grants_fragment = build_grants(load_grants())
+    links = {it.get("key", ""): u for it in items if (u := canonical_url(it, overrides))}
+    grants = load_grants()
+    grants_by_id = {str(g["id"]).lower(): g for g in grants if g.get("id")}
+    page, fragment = build(items, links, grants_by_id)
+    grants_fragment = build_grants(grants)
     os.makedirs("docs", exist_ok=True)
     with open("docs/index.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(page)
@@ -279,17 +288,20 @@ def main() -> int:
     with open("docs/grants-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(grants_fragment)
     with open("docs/publications.md", "w", encoding="utf-8", newline="\n") as f:
-        f.write(build_md(items, links))
+        f.write(build_md(items, links, grants_by_id))
     with open("docs/grants.md", "w", encoding="utf-8", newline="\n") as f:
-        f.write(build_grants_md(load_grants()))
+        f.write(build_grants_md(grants))
     if grants_fragment:
         stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         with open("docs/grants.html", "w", encoding="utf-8", newline="\n") as f:
             f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Grants and Contracts</h1>\n<p class=\"meta\">Awarded grants and contracts. Generated {stamp}.</p>\n" + grants_fragment + "</body>\n</html>\n")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
-    print(f"wrote {len(items)} publications ({len(links)} with full text), {grants_fragment.count('<li>')} grants")
+    print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
     for t in missing:
-        print("  no full text:", t)
+        print("  no canonical link (add to fulltext.yml or fix the Zotero record):", t)
+    for it in items:
+        if not abstract_of(it):
+            print("  no abstract in Zotero:", it["data"].get("title", "")[:70])
     return 0
 
 

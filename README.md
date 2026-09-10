@@ -2,6 +2,8 @@
 
 Generates the Publications page for the Arizona Cybersecurity Academy website from the Academy's Zotero group library (group 6382800, collection "Academy Output"). Zotero renders each entry in APA; the script groups them by year and writes `docs/index.html` (a complete page) and `docs/publications-fragment.html` (the bare list for pasting into the Arizona Sites editor).
 
+Each entry carries its canonical link (DOI or publisher URL) and a UA-proxied twin (zproxy.library.arizona.edu), its abstract from the Zotero record, and, where a record is tagged grant:<id> with an id from grants.yml, an 'Output of' line naming the grant. No third-party resolvers are used.
+
 The GitHub Action runs every Monday morning and on demand, and commits only when the list changed, so the commit history is the change log.
 
 ## Setup

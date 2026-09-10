@@ -1,3 +1,2 @@
-# Manual full-text overrides. Key = DOI (lower-case) or Zotero item key; value = URL to the open full text.
-# Checked before Unpaywall, so use this for items Unpaywall does not know (book chapters, OER, reports) or where its guess is wrong.
-# Leave a key out rather than pointing at a paywall; the page only links full text that is actually open.
+# Manual canonical-link overrides, for records with no DOI and no usable URL. Key = DOI (lower-case) or Zotero item key; value = the publisher-of-record URL.
+# No third-party resolvers are used anywhere in this build; every link on the page is the canonical one plus its UA-proxied twin.

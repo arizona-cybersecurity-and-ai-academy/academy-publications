@@ -4,7 +4,7 @@
 # Only AWARDED grants are listed. Pending and not-funded submissions stay off the public page by design.
 # `show: true` puts the row on the website; pre-Academy awards (before 2023) are kept for the record with show: false.
 # `amount` is the total award as printed on the CV; whether amounts appear on the site is the team's call (see build.py SHOW_AMOUNTS).
-# Add new awards at the top. Fields: title, sponsor, prime (pass-through institution, if any), years, amount, role (Academy people and roles), show.
+# Add new awards at the top. Fields: id (optional short slug; tag a Zotero record grant:<id> to mark it as a direct output of that grant), title, sponsor, prime (pass-through institution, if any), years, amount, role (Academy people and roles), show.
 
 - title: "AZ Cyber Pathways Research Practice Partnership"
   sponsor: "National Science Foundation"
@@ -22,7 +22,8 @@
   role: "Felix, M. (PI); Bevington, A., Ball, A. (Co-PIs); Keely, J., Wagner, P. (Key Personnel)"
   show: true
 
-- title: "CyberAI Curriculum Mapping and CLARK Development"
+- id: cyberai-clark
+  title: "CyberAI Curriculum Mapping and CLARK Development"
   sponsor: "National Security Agency"
   prime: "Towson University"
   years: "2025"
@@ -46,7 +47,8 @@
   role: "Honomichl, R. (PI); Wagner, P. (Co-PI)"
   show: true
 
-- title: "National Cybersecurity Teaching Academy 3.0"
+- id: ncta-3
+  title: "National Cybersecurity Teaching Academy 3.0"
   sponsor: "National Security Agency"
   prime: "University of Arkansas at Little Rock"
   years: "2024-2027"
@@ -62,7 +64,8 @@
   role: "Wagner, P. (PI)"
   show: true
 
-- title: "2024 DoD Cyber Scholarship Program and Capacity Building: Security Assessments for Experiential Learning in Ecosystems with Area and Regional Needs (SAFE LEARN)"
+- id: safe-learn
+  title: "2024 DoD Cyber Scholarship Program and Capacity Building: Security Assessments for Experiential Learning in Ecosystems with Area and Regional Needs (SAFE LEARN)"
   sponsor: "National Security Agency"
   prime: ""
   years: "2024-2026"
@@ -71,7 +74,8 @@
   note: "$146,760 of the award is allocated to SAFE LEARN."
   show: true
 
-- title: "Supporting Communities and Small Businesses by Conducting Risk and Vulnerability Assessments through Student Experiential Learning Opportunities (Arizona Cybersecurity Clinic)"
+- id: google-clinic
+  title: "Supporting Communities and Small Businesses by Conducting Risk and Vulnerability Assessments through Student Experiential Learning Opportunities (Arizona Cybersecurity Clinic)"
   sponsor: "Google (Tides Foundation)"
   prime: ""
   years: "2024-2030"
@@ -95,7 +99,8 @@
   role: "Wagner, P. (PI)"
   show: true
 
-- title: "CyberSupply Data Collection Project"
+- id: cybersupply
+  title: "CyberSupply Data Collection Project"
   sponsor: "Center for the Future of Arizona"
   prime: ""
   years: "2023"
