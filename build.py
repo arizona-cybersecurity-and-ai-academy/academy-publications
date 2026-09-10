@@ -1,0 +1,122 @@
+"""Build the Arizona Cybersecurity Academy publications page from the Zotero group.
+
+Reads the "Academy Output" collection of the Academy group library through the Zotero Web API,
+lets Zotero render each entry in APA, groups entries by year (newest first), and writes two files:
+
+  docs/index.html                 a complete standalone page (for GitHub Pages or an embed)
+  docs/publications-fragment.html the bare list, for pasting into the Arizona Sites editor
+
+Only the rendered output is committed; the workflow commits only when it changed.
+Configuration is by environment variable so nothing library-specific is hard-coded in the workflow.
+"""
+from __future__ import annotations
+
+import html
+import json
+import os
+import re
+import sys
+import urllib.parse
+import urllib.request
+from collections import defaultdict
+from datetime import datetime, timezone
+
+GROUP = os.environ.get("ZOTERO_GROUP", "6382800")
+COLLECTION = os.environ.get("ZOTERO_COLLECTION", "GAIH6QIZ")
+STYLE = os.environ.get("CSL_STYLE", "apa")
+API_KEY = os.environ.get("ZOTERO_API_KEY", "")
+TITLE = os.environ.get("PAGE_TITLE", "Arizona Cybersecurity Academy: Publications")
+UA = "academy-publications-build/1.0 (mailto:ryanstraight@arizona.edu)"
+
+
+def fetch(url: str) -> tuple[list, dict]:
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Zotero-API-Version": "3", **({"Zotero-API-Key": API_KEY} if API_KEY else {})})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.load(r), dict(r.headers)
+
+
+def all_items() -> list[dict]:
+    base = f"https://api.zotero.org/groups/{GROUP}/collections/{COLLECTION}/items/top"
+    q = {"format": "json", "include": "data,bib", "style": STYLE, "linkwrap": "1", "limit": "100", "start": "0"}
+    out: list[dict] = []
+    while True:
+        items, headers = fetch(base + "?" + urllib.parse.urlencode(q))
+        out.extend(items)
+        if len(items) < 100:
+            break
+        q["start"] = str(int(q["start"]) + 100)
+    return out
+
+
+def year_of(item: dict) -> str:
+    d = item.get("meta", {}).get("parsedDate") or item.get("data", {}).get("date") or ""
+    m = re.search(r"\d{4}", d)
+    return m.group(0) if m else "Undated"
+
+
+def title_key(item: dict) -> str:
+    return (item.get("data", {}).get("title") or "").lower()
+
+
+def strip_bib_wrapper(bib: str) -> str:
+    # Zotero returns <div class="csl-bib-body"><div class="csl-entry">...</div></div>; keep the entry only.
+    m = re.search(r'<div class="csl-entry">(.*)</div>\s*</div>\s*$', bib, re.S)
+    return m.group(1).strip() if m else bib.strip()
+
+
+def build(items: list[dict]) -> tuple[str, str]:
+    by_year: dict[str, list[dict]] = defaultdict(list)
+    for it in items:
+        by_year[year_of(it)].append(it)
+    years = sorted(by_year, key=lambda y: (y != "Undated", y), reverse=True)
+    parts: list[str] = []
+    n = 0
+    for y in years:
+        parts.append(f"<h3>{html.escape(y)}</h3>\n<ul class=\"academy-pubs\">")
+        for it in sorted(by_year[y], key=title_key):
+            parts.append(f"  <li>{strip_bib_wrapper(it.get('bib', ''))}</li>")
+            n += 1
+        parts.append("</ul>")
+    fragment = "\n".join(parts) + "\n"
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(TITLE)}</title>
+<style>
+  body {{ font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; color: #1e1e1e; background: #fff; }}
+  h1 {{ font-size: 1.6rem; }}
+  h3 {{ margin-top: 1.75rem; border-bottom: 1px solid #ddd; padding-bottom: .25rem; }}
+  ul.academy-pubs {{ list-style: none; padding-left: 0; }}
+  ul.academy-pubs li {{ margin: 0 0 .9rem 0; padding-left: 2rem; text-indent: -2rem; }}
+  a {{ color: #0c234b; }}
+  .meta {{ color: #555; font-size: .85rem; }}
+</style>
+</head>
+<body>
+<h1>{html.escape(TITLE)}</h1>
+<p class="meta">{n} publications. Generated {stamp} from the Academy Zotero library.</p>
+{fragment}</body>
+</html>
+"""
+    return page, fragment
+
+
+def main() -> int:
+    items = all_items()
+    if not items:
+        print("no items in collection; writing an empty list", file=sys.stderr)
+    page, fragment = build(items)
+    os.makedirs("docs", exist_ok=True)
+    with open("docs/index.html", "w", encoding="utf-8", newline="\n") as f:
+        f.write(page)
+    with open("docs/publications-fragment.html", "w", encoding="utf-8", newline="\n") as f:
+        f.write(fragment)
+    print(f"wrote {len(items)} entries")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
