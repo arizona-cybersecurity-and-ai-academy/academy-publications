@@ -240,11 +240,15 @@ def build_md(items: list[dict], links: dict[str, str], grants_by_id: dict[str, d
                     line += f" [UA access]({proxied(ft)})"
             out.append(f"- {line}")
             gl = grant_labels(it, grants_by_id)
+            ab = abstract_of(it)
+            if gl or ab:
+                out.append("")   # a blank line so the blockquote nests inside the list item rather than running on
             if gl:
                 out.append(f"    *Output of: {'; '.join(gl)}.*")
-            ab = abstract_of(it)
+                out.append("")
             if ab:
-                out.append(f"    {ab}")
+                out.append(f"    > {ab}")
+                out.append("")
         out.append("")
     return "\n".join(out).rstrip() + "\n"
 

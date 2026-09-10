@@ -11,7 +11,9 @@
 ### 2024
 
 - Straight, R., & Gunder, A. (2024, April 11). *Pondering a Posthuman Pedagogy: Redefining “Learner” in the AI Era* [Conference presentation]. OLC Innovate 2024.
-    Join us in a mind-melting exploration of the "posthuman learner," where AIs merge with humans and we challenge traditional pedagogical boundaries. Expect dynamic exchanges on reimagining education, technology, and the future of instruction, aiming to provoke critical thinking about the future of learn(ing/ers) in an AI-integrated world.
+
+    > Join us in a mind-melting exploration of the "posthuman learner," where AIs merge with humans and we challenge traditional pedagogical boundaries. Expect dynamic exchanges on reimagining education, technology, and the future of instruction, aiming to provoke critical thinking about the future of learn(ing/ers) in an AI-integrated world.
+
 
 ### 2023
 
@@ -20,4 +22,5 @@
 ### 2022
 
 - Straight, R. (2022, May 2). *Cybersecurity, Education, and Technological Mediation*. [https://ryanstraight.com/talks/the-xf-framework](https://ryanstraight.com/talks/the-xf-framework)
-    A Talk for Women in Cyber Security (WiCyS)
+
+    > A Talk for Women in Cyber Security (WiCyS)
