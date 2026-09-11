@@ -379,16 +379,19 @@ def main() -> int:
     peer = sum(1 for it in items if it.get("data", {}).get("itemType") in {"journalArticle", "conferencePaper"})
     funding = sum(float(g["amount"]) for g in grants if g.get("amount") is not None)
     deliveries = sum(deliveries_of(it) for it in witems)
-    # Federal sponsors of the awarded grants, by short name, ordered by total dollars. Ryan, 2026-09-11: the third
-    # hero slot is the sponsor line rather than a presentations count, which depends on tagging and decays.
-    federal = {"National Science Foundation": "NSF", "National Security Agency": "NSA", "United States Department of Defense": "DoD", "National Institute of Standards and Technology": "NIST", "Department of Homeland Security": "DHS", "Department of Energy": "DOE", "National Institutes of Health": "NIH"}
+    # Sponsors of the awarded grants. The hero figure is the COUNT of distinct external sponsors (University of Arizona
+    # internal funds excluded); the caption names the ones on the short-name map, ordered by dollars. Ryan, 2026-09-11:
+    # a number in the slot for consistency with the other two, the names underneath, federal plus the Arizona partner.
+    named = {"National Science Foundation": "NSF", "National Security Agency": "NSA", "United States Department of Defense": "DoD", "National Institute of Standards and Technology": "NIST", "Center for the Future of Arizona": "the Center for the Future of Arizona", "Department of Homeland Security": "DHS", "Department of Energy": "DOE", "National Institutes of Health": "NIH"}
     by_sponsor: dict[str, float] = defaultdict(float)
     for g in grants:
-        short = federal.get(str(g.get("sponsor", "")).strip())
-        if short:
-            by_sponsor[short] += float(g.get("amount") or 0)
-    sponsors = [s for s, _ in sorted(by_sponsor.items(), key=lambda kv: -kv[1])]
-    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "workshop_and_presentation_deliveries": deliveries, "grants": len(grants), "federal_sponsors": sponsors, "as_of": stamp}
+        sp = str(g.get("sponsor", "")).strip()
+        if sp and "university of arizona" not in sp.lower():
+            by_sponsor[sp] += float(g.get("amount") or 0)
+    sponsor_count = len(by_sponsor)
+    sponsors = [named[s] for s, _ in sorted(by_sponsor.items(), key=lambda kv: -kv[1]) if s in named]
+    sponsor_caption = "Sponsors, including " + (", ".join(sponsors[:-1]) + " and " + sponsors[-1] if len(sponsors) > 1 else "".join(sponsors)) if sponsors else "Sponsors"
+    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "workshop_and_presentation_deliveries": deliveries, "grants": len(grants), "sponsors": sponsor_count, "named_sponsors": sponsors, "as_of": stamp}
     with open("docs/stats.json", "w", encoding="utf-8", newline="\n") as f:
         json.dump(stats, f, indent=2)
         f.write("\n")
@@ -396,12 +399,12 @@ def main() -> int:
         '<ul class="academy-numbers">\n'
         f'  <li><strong>${funding:,.0f}</strong><br>Research Funding</li>\n'
         f'  <li><strong>{peer}</strong><br>Peer-Reviewed Publications</li>\n'
-        f'  <li><strong>{html.escape(", ".join(sponsors))}</strong><br>Federal Sponsors</li>\n'
+        f'  <li><strong>{sponsor_count}</strong><br>{html.escape(sponsor_caption)}</li>\n'
         '</ul>\n'
     )
     with open("docs/numbers-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(numbers)
-    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations, {deliveries} deliveries, federal sponsors {sponsors}")
+    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations, {deliveries} deliveries, {sponsor_count} sponsors ({sponsor_caption})")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
     print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
     for t in missing:

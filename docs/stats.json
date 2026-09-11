@@ -5,11 +5,13 @@
   "workshops_and_presentations": 8,
   "workshop_and_presentation_deliveries": 8,
   "grants": 14,
-  "federal_sponsors": [
+  "sponsors": 7,
+  "named_sponsors": [
     "NSA",
     "DoD",
     "NSF",
-    "NIST"
+    "NIST",
+    "the Center for the Future of Arizona"
   ],
   "as_of": "2026-09-11"
 }
