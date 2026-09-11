@@ -7,6 +7,9 @@ Generates the research lists for the Arizona Cybersecurity Academy website from 
 | Publications | Academy Output | `docs/publications.md`, `docs/publications-fragment.html`, `docs/index.html` |
 | Workshops and presentations | Workshops and Presentations | `docs/workshops.md`, `docs/workshops-fragment.html`, `docs/workshops.html` |
 | Grants and contracts | `grants.yml` in this repository (not Zotero) | `docs/grants.md`, `docs/grants-fragment.html`, `docs/grants.html` |
+| Research by the Numbers | computed from the three lists above | `docs/numbers-fragment.html`, `docs/stats.json` |
+
+The numbers block is generated from the same data as the lists, so it cannot drift from them: research funding is the sum of the grants shown, peer-reviewed publications counts journal articles and conference papers in the Academy Output collection, and workshops and presentations is that list's length. Paste `numbers-fragment.html` into the numbers section the same way as the lists whenever a list changes; `stats.json` carries the raw values for anything else that wants them.
 
 Zotero renders each entry in APA; the publications list is sectioned by type (journal articles, conference papers, then books, chapters and reports), with years newest first inside each section and a numbered list per year, after the Eller AI Lab page. A record tagged `award:<text>` prints that award in bold after its citation. Each entry carries its canonical link (DOI or publisher URL) and, for DOI links, a University of Arizona library twin through `ezproxy.library.arizona.edu`. Abstracts come from the Zotero record. A record tagged `grant:<id>`, where the id is one declared in `grants.yml`, gets an "Output of" line naming the grant. No third-party resolvers are used anywhere in the build.
 

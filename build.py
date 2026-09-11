@@ -359,6 +359,25 @@ def main() -> int:
     with open("docs/workshops.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Workshops and Presentations</h1>\n" + wfragment + "</body>\n</html>\n")
     print(f"wrote {len(witems)} workshops and presentations")
+    # "Research by the Numbers": the site cannot compute anything, so the block is generated here from the same
+    # data as the lists and pasted the same way. Definitions (Ryan, 2026-09-11): funding = sum of shown grants;
+    # peer-reviewed = journal articles + conference papers in Academy Output; presentations = the workshops list.
+    peer = sum(1 for it in items if it.get("data", {}).get("itemType") in {"journalArticle", "conferencePaper"})
+    funding = sum(float(g["amount"]) for g in grants if g.get("amount") is not None)
+    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "grants": len(grants), "as_of": stamp}
+    with open("docs/stats.json", "w", encoding="utf-8", newline="\n") as f:
+        json.dump(stats, f, indent=2)
+        f.write("\n")
+    numbers = (
+        '<ul class="academy-numbers">\n'
+        f'  <li><strong>${funding:,.0f}</strong><br>Research Funding</li>\n'
+        f'  <li><strong>{peer}</strong><br>Peer-Reviewed Publications</li>\n'
+        f'  <li><strong>{len(witems)}</strong><br>Workshops and Presentations</li>\n'
+        '</ul>\n'
+    )
+    with open("docs/numbers-fragment.html", "w", encoding="utf-8", newline="\n") as f:
+        f.write(numbers)
+    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
     print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
     for t in missing:
