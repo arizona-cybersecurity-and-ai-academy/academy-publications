@@ -210,6 +210,18 @@ def grant_labels(item: dict, grants_by_id: dict[str, dict]) -> list[str]:
     return out
 
 
+def deliveries_of(item: dict) -> int:
+    """A workshop or talk listed once but given several times carries a Zotero tag `delivered:<n>`; untagged counts as one.
+    The list stays de-duplicated (one entry per title) while the numbers block counts every delivery (Ryan, 2026-09-11)."""
+    for t in item.get("data", {}).get("tags", []):
+        tag = str(t.get("tag", "")).lower()
+        if tag.startswith("delivered:"):
+            m = re.search(r"\d+", tag)
+            if m:
+                return max(1, int(m.group(0)))
+    return 1
+
+
 def abstract_of(item: dict) -> str:
     a = (item.get("data", {}).get("abstractNote") or "").strip()
     return re.sub(r"\s+", " ", a)
@@ -366,7 +378,8 @@ def main() -> int:
     # peer-reviewed = journal articles + conference papers in Academy Output; presentations = the workshops list.
     peer = sum(1 for it in items if it.get("data", {}).get("itemType") in {"journalArticle", "conferencePaper"})
     funding = sum(float(g["amount"]) for g in grants if g.get("amount") is not None)
-    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "grants": len(grants), "as_of": stamp}
+    deliveries = sum(deliveries_of(it) for it in witems)
+    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "workshop_and_presentation_deliveries": deliveries, "grants": len(grants), "as_of": stamp}
     with open("docs/stats.json", "w", encoding="utf-8", newline="\n") as f:
         json.dump(stats, f, indent=2)
         f.write("\n")
@@ -374,12 +387,12 @@ def main() -> int:
         '<ul class="academy-numbers">\n'
         f'  <li><strong>${funding:,.0f}</strong><br>Research Funding</li>\n'
         f'  <li><strong>{peer}</strong><br>Peer-Reviewed Publications</li>\n'
-        f'  <li><strong>{len(witems)}</strong><br>Workshops and Presentations</li>\n'
+        f'  <li><strong>{deliveries}</strong><br>Workshop and Presentation Deliveries</li>\n'
         '</ul>\n'
     )
     with open("docs/numbers-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(numbers)
-    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations")
+    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations, {deliveries} deliveries")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
     print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
     for t in missing:
