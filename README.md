@@ -19,7 +19,7 @@ The GitHub Action runs every Monday morning and on demand, and commits only when
 
 - **A publication or a workshop:** add the record to the matching collection in the Zotero group, ideally from the publisher's page with Zotero's browser connector so the metadata arrives clean, and attach the PDF. The next build picks it up.
 - **Workshops and presentations before 2024 are dropped** at build time (`WORKSHOPS_MIN_YEAR`, default 2024): talks given before the Academy existed are not Academy output, whatever the Zotero collection holds.
-- **A grant:** add an entry to `grants.yml`. `show: false` keeps an entry on record without publishing it; `id` is an optional slug that lets Zotero records be tagged as outputs of that grant.
+- **A grant:** add an entry to `grants.yml`. Only awarded grants are listed or counted: `status: submitted` (or anything other than `awarded`) keeps a proposal on record but out of the lists and the funding total. `show: false` keeps an awarded entry on record without publishing it; `id` is an optional slug that lets Zotero records be tagged as outputs of that grant.
 - **A record with no DOI and no usable URL:** add its publisher-of-record URL to `fulltext.yml`, keyed by DOI or Zotero item key.
 
 ## Setup

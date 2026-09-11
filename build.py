@@ -135,7 +135,9 @@ def load_grants(path: str = "grants.yml") -> list[dict]:
         return []
     with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f) or []
-    return [g for g in data if g.get("show", True)]
+    # Only awarded money is shown or counted. A pending or submitted proposal may sit in the file for the record with
+    # status: submitted; it is excluded from the lists and from the funding total until its status becomes awarded.
+    return [g for g in data if g.get("show", True) and str(g.get("status", "awarded")).lower() == "awarded"]
 
 
 def build_grants(grants: list[dict]) -> str:
