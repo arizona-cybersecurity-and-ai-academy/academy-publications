@@ -5,5 +5,11 @@
   "workshops_and_presentations": 8,
   "workshop_and_presentation_deliveries": 8,
   "grants": 14,
+  "federal_sponsors": [
+    "NSA",
+    "DoD",
+    "NSF",
+    "NIST"
+  ],
   "as_of": "2026-09-11"
 }

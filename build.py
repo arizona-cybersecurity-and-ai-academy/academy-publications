@@ -379,7 +379,16 @@ def main() -> int:
     peer = sum(1 for it in items if it.get("data", {}).get("itemType") in {"journalArticle", "conferencePaper"})
     funding = sum(float(g["amount"]) for g in grants if g.get("amount") is not None)
     deliveries = sum(deliveries_of(it) for it in witems)
-    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "workshop_and_presentation_deliveries": deliveries, "grants": len(grants), "as_of": stamp}
+    # Federal sponsors of the awarded grants, by short name, ordered by total dollars. Ryan, 2026-09-11: the third
+    # hero slot is the sponsor line rather than a presentations count, which depends on tagging and decays.
+    federal = {"National Science Foundation": "NSF", "National Security Agency": "NSA", "United States Department of Defense": "DoD", "National Institute of Standards and Technology": "NIST", "Department of Homeland Security": "DHS", "Department of Energy": "DOE", "National Institutes of Health": "NIH"}
+    by_sponsor: dict[str, float] = defaultdict(float)
+    for g in grants:
+        short = federal.get(str(g.get("sponsor", "")).strip())
+        if short:
+            by_sponsor[short] += float(g.get("amount") or 0)
+    sponsors = [s for s, _ in sorted(by_sponsor.items(), key=lambda kv: -kv[1])]
+    stats = {"research_funding": funding, "peer_reviewed_publications": peer, "publications_total": len(items), "workshops_and_presentations": len(witems), "workshop_and_presentation_deliveries": deliveries, "grants": len(grants), "federal_sponsors": sponsors, "as_of": stamp}
     with open("docs/stats.json", "w", encoding="utf-8", newline="\n") as f:
         json.dump(stats, f, indent=2)
         f.write("\n")
@@ -387,12 +396,12 @@ def main() -> int:
         '<ul class="academy-numbers">\n'
         f'  <li><strong>${funding:,.0f}</strong><br>Research Funding</li>\n'
         f'  <li><strong>{peer}</strong><br>Peer-Reviewed Publications</li>\n'
-        f'  <li><strong>{deliveries}</strong><br>Workshop and Presentation Deliveries</li>\n'
+        f'  <li><strong>{html.escape(", ".join(sponsors))}</strong><br>Federal Sponsors</li>\n'
         '</ul>\n'
     )
     with open("docs/numbers-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(numbers)
-    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations, {deliveries} deliveries")
+    print(f"numbers: ${funding:,.0f} funding, {peer} peer-reviewed of {len(items)} publications, {len(witems)} presentations, {deliveries} deliveries, federal sponsors {sponsors}")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
     print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
     for t in missing:
