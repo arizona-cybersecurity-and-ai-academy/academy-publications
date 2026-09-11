@@ -84,7 +84,7 @@ def build(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict
             gl = grant_labels(it, grants_by_id)
             if gl:
                 entry += f'<div class="grant">Output of: {html.escape("; ".join(gl))}.</div>'
-            ab = abstract_of(it)
+            ab = abstract_of(it) if SITE_ABSTRACTS else ""
             if ab:
                 entry += f'<div class="abstract">{html.escape(ab)}</div>'
             parts.append(f"  <li>{entry}</li>")
@@ -120,6 +120,10 @@ def build(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict
 
 
 SHOW_AMOUNTS = os.environ.get("SHOW_AMOUNTS", "1") == "1"
+# Abstracts stay in Zotero. On the live site (2026-09-11) they rendered as unstyled full-size body text under
+# every citation, 32 paragraph-long walls in one accordion, because Arizona Sites applies no CSS to .abstract.
+# Off by default; SITE_ABSTRACTS=1 restores them for a standalone page that carries its own stylesheet.
+SITE_ABSTRACTS = os.environ.get("SITE_ABSTRACTS", "0") == "1"
 
 
 def load_grants(path: str = "grants.yml") -> list[dict]:
@@ -247,7 +251,7 @@ def md_entry(it: dict, n: int, links: dict[str, str], grants_by_id: dict[str, di
         line += f" **{a}.**"
     out = [f"{n}. {line}"]
     gl = grant_labels(it, grants_by_id)
-    ab = abstract_of(it)
+    ab = abstract_of(it) if SITE_ABSTRACTS else ""
     if gl or ab:
         out.append("")   # a blank line so the blockquote nests inside the list item rather than running on
     if gl:
@@ -343,6 +347,10 @@ def main() -> int:
     # Workshops and presentations: a second collection, same rendering, its own files.
     wcol = os.environ.get("ZOTERO_WORKSHOPS_COLLECTION", "MRCSGEM2")
     witems = all_items(wcol) if wcol else []
+    # Talks given before the Academy existed are not Academy output. Ryan, 2026-09-11: nothing from 2022-2023
+    # (a 2022 WiCyS talk was on the live page). Floor is a year; raise it if the Academy's start date moves.
+    wmin = int(os.environ.get("WORKSHOPS_MIN_YEAR", "2024"))
+    witems = [it for it in witems if year_of(it).isdigit() and int(year_of(it)) >= wmin]
     wlinks = {it.get("key", ""): u for it in witems if (u := canonical_url(it, overrides))}
     _, wfragment = build(witems, wlinks, grants_by_id)
     with open("docs/workshops.md", "w", encoding="utf-8", newline="\n") as f:

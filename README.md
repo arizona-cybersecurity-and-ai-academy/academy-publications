@@ -15,6 +15,7 @@ The GitHub Action runs every Monday morning and on demand, and commits only when
 ## Adding to the lists
 
 - **A publication or a workshop:** add the record to the matching collection in the Zotero group, ideally from the publisher's page with Zotero's browser connector so the metadata arrives clean, and attach the PDF. The next build picks it up.
+- **Workshops and presentations before 2024 are dropped** at build time (`WORKSHOPS_MIN_YEAR`, default 2024): talks given before the Academy existed are not Academy output, whatever the Zotero collection holds.
 - **A grant:** add an entry to `grants.yml`. `show: false` keeps an entry on record without publishing it; `id` is an optional slug that lets Zotero records be tagged as outputs of that grant.
 - **A record with no DOI and no usable URL:** add its publisher-of-record URL to `fulltext.yml`, keyed by DOI or Zotero item key.
 
@@ -31,6 +32,8 @@ ZOTERO_API_KEY=... python build.py
 
 ## Updating the website
 
-Arizona Sites (Quickstart) cannot load modules, and its editor accepts Markdown but nothing more technical, so the page is maintained by pasting the generated Markdown: `docs/publications.md`, `docs/workshops.md` and `docs/grants.md`. Replace the whole block each time rather than editing entries in place; the site applies its own theme. The HTML outputs are kept for any future embed option.
+Arizona Sites (Quickstart) cannot load modules. Its editor takes the generated HTML fragments as-is (verified on the live Research page, 2026-09-11: classes, links and the UA-proxy twins all survived), so paste `docs/publications-fragment.html`, `docs/workshops-fragment.html` and `docs/grants-fragment.html`. Do not paste the full pages (`index.html`, `workshops.html`, `grants.html`): they carry an `<h1>` and a "Generated ..." line meant for a standalone page, and both showed up inside the site's accordions. The Markdown files are the fallback if the editor is switched to a Markdown-only format. Replace the whole block each time rather than editing entries in place; the site applies its own theme.
+
+Abstracts are not in the site output. The site applies no styling to them, so they rendered as full-size body text under every citation. They stay in Zotero; `SITE_ABSTRACTS=1` restores them for a standalone page that carries its own stylesheet.
 
 To be told when a list changes without a GitHub account, follow the commit feed at `https://github.com/arizona-cybersecurity-and-ai-academy/academy-publications/commits/master.atom` (Outlook reads RSS natively). With a GitHub account, watching the repository sends an email per update.
