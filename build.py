@@ -112,7 +112,6 @@ def build(items: list[dict], links: dict[str, str], grants_by_id: dict[str, dict
 </head>
 <body>
 <h1>{html.escape(TITLE)}</h1>
-<p class="meta">{n} publications. Generated {stamp} from the Academy Zotero library.</p>
 {fragment}</body>
 </html>
 """
@@ -343,7 +342,7 @@ def main() -> int:
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     if grants_fragment:
         with open("docs/grants.html", "w", encoding="utf-8", newline="\n") as f:
-            f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Grants and Contracts</h1>\n<p class=\"meta\">Awarded grants and contracts. Generated {stamp}.</p>\n" + grants_fragment + "</body>\n</html>\n")
+            f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Grants and Contracts</h1>\n" + grants_fragment + "</body>\n</html>\n")
     # Workshops and presentations: a second collection, same rendering, its own files.
     wcol = os.environ.get("ZOTERO_WORKSHOPS_COLLECTION", "MRCSGEM2")
     witems = all_items(wcol) if wcol else []
@@ -358,7 +357,7 @@ def main() -> int:
     with open("docs/workshops-fragment.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(wfragment if witems else "")
     with open("docs/workshops.html", "w", encoding="utf-8", newline="\n") as f:
-        f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Workshops and Presentations</h1>\n<p class=\"meta\">{len(witems)} entries. Generated {stamp} from the Academy Zotero library.</p>\n" + wfragment + "</body>\n</html>\n")
+        f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Workshops and Presentations</h1>\n" + wfragment + "</body>\n</html>\n")
     print(f"wrote {len(witems)} workshops and presentations")
     missing = [it["data"].get("title", "")[:70] for it in items if it.get("key", "") not in links]
     print(f"wrote {len(items)} publications ({len(links)} with a canonical link), {grants_fragment.count('<li>')} grants")
