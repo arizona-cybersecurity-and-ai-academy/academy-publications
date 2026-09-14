@@ -48,6 +48,40 @@ def all_items(collection: str = COLLECTION) -> list[dict]:
     return out
 
 
+def fetch_text(url: str) -> str:
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Zotero-API-Version": "3", **({"Zotero-API-Key": API_KEY} if API_KEY else {})})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read().decode("utf-8")
+
+
+def all_bibtex(collection: str = COLLECTION) -> str:
+    # Zotero renders BibTeX server-side (format=bibtex); paginate the same way as the JSON fetch and concatenate.
+    # Requested by Veronika Kyles, 2026-09-14: a .bib alongside the pasted lists so the site editors can cite from it.
+    base = f"https://api.zotero.org/groups/{GROUP}/collections/{collection}/items/top"
+    q = {"format": "bibtex", "limit": "100", "start": "0"}
+    chunks: list[str] = []
+    while True:
+        text = fetch_text(base + "?" + urllib.parse.urlencode(q)).strip()
+        if text:
+            chunks.append(text)
+        n = text.count("\n@") + (1 if text.startswith("@") else 0)
+        if n < 100:
+            break
+        q["start"] = str(int(q["start"]) + 100)
+    return ("\n\n".join(chunks) + "\n") if chunks else ""
+
+
+def bibtex_from_year(bib: str, min_year: int) -> str:
+    # Apply the same year floor the workshops list uses, so the .bib matches the page entry for entry.
+    entries = [e for e in re.split(r"\n(?=@)", bib.strip()) if e.strip()]
+    keep = []
+    for e in entries:
+        m = re.search(r"year\s*=\s*\{?(\d{4})", e)
+        if not m or int(m.group(1)) >= min_year:
+            keep.append(e.strip())
+    return ("\n\n".join(keep) + "\n") if keep else ""
+
+
 def year_of(item: dict) -> str:
     d = item.get("meta", {}).get("parsedDate") or item.get("data", {}).get("date") or ""
     m = re.search(r"\d{4}", d)
@@ -373,6 +407,11 @@ def main() -> int:
     with open("docs/workshops.html", "w", encoding="utf-8", newline="\n") as f:
         f.write(page.split("<h1>")[0] + f"<h1>Arizona Cybersecurity Academy: Workshops and Presentations</h1>\n" + wfragment + "</body>\n</html>\n")
     print(f"wrote {len(witems)} workshops and presentations")
+    # BibTeX exports of both collections, one file each, for anyone citing from the site (Veronika's ask, 2026-09-14).
+    with open("docs/academy-output.bib", "w", encoding="utf-8", newline="\n") as f:
+        f.write(all_bibtex())
+    with open("docs/workshops.bib", "w", encoding="utf-8", newline="\n") as f:
+        f.write(bibtex_from_year(all_bibtex(wcol), wmin) if wcol else "")
     # "Research by the Numbers": the site cannot compute anything, so the block is generated here from the same
     # data as the lists and pasted the same way. Definitions (Ryan, 2026-09-11): funding = sum of shown grants;
     # peer-reviewed = journal articles + conference papers in Academy Output; presentations = the workshops list.
