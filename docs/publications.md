@@ -112,9 +112,3 @@
 ### 2023
 
 1. Wagner, P. (2023). Privacy Education and Training Awareness (PETA). In K. Streff & L. McKee (Eds.), *Data Privacy Management*. Linus Books.
-
-## Other
-
-### Undated
-
-1. *Import errors found: Token mismatch, expected “}”, found “.\n}”... at line 6795*. (n.d.).
