@@ -45,7 +45,9 @@ def all_items(collection: str = COLLECTION) -> list[dict]:
         if len(items) < 100:
             break
         q["start"] = str(int(q["start"]) + 100)
-    return out
+    # Standalone notes and attachments are not works. A failed BibTeX import leaves an
+    # "Import errors found" note in the collection, which otherwise renders as an Undated entry.
+    return [it for it in out if it.get("data", {}).get("itemType") not in {"note", "attachment", "annotation"}]
 
 
 def fetch_text(url: str) -> str:
