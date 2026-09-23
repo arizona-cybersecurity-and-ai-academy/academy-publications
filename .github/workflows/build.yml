@@ -2,7 +2,7 @@ name: Build publications page
 
 on:
   schedule:
-    - cron: "0 13 * * 1"   # Mondays 06:00 Arizona
+    - cron: "17 * * * *"   # hourly, at :17 (off the top of the hour, when GitHub's scheduler is busiest)
   workflow_dispatch:
 
 permissions:

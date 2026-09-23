@@ -14,7 +14,7 @@ The numbers block is generated from the same data as the lists, so it cannot dri
 
 Zotero renders each entry in APA; the publications list is sectioned by type (journal articles, conference papers, then books, chapters and reports), with years newest first inside each section and a numbered list per year, after the Eller AI Lab page. A record tagged `award:<text>` prints that award in bold after its citation. Each entry carries its canonical link (DOI or publisher URL) and, for DOI links, a University of Arizona library twin through `ezproxy.library.arizona.edu`. Abstracts come from the Zotero record. A record tagged `grant:<id>`, where the id is one declared in `grants.yml`, gets an "Output of" line naming the grant. No third-party resolvers are used anywhere in the build.
 
-The GitHub Action runs every Monday morning and on demand, and commits only when a list changed, so the commit history is the change log.
+The GitHub Action runs every hour (at :17) and on demand, and commits only when a list changed, so the commit history is the change log. A record added to Zotero reaches the fragments within about an hour with no one pressing anything; GitHub can delay scheduled runs at busy times, and it pauses schedules on a repository with no activity for 60 days.
 
 ## Adding to the lists
 
