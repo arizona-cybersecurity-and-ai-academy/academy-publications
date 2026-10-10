@@ -42,6 +42,10 @@
 
 ## Conference Papers
 
+### 2027
+
+1. Straight, R., & Honomichl, R. J. (2027, March). Stop rebuilding the same crosswalk: 12+ cybersecurity frameworks, one open comparison. *NICE K12 Cybersecurity Education Conference*.
+
 ### 2026
 
 1. Xu, S., & Qian, Y. (2026). A Federated Trust Modeling Framework for Anomaly Detection in Zero Trust Edge Networks. *ICC 2026 - IEEE International Conference on Communications*, 1–6. [https://doi.org/10.1109/ICC59461.2026.11587073](https://doi.org/10.1109/ICC59461.2026.11587073) [UA access](https://ezproxy.library.arizona.edu/login?url=https://doi.org/10.1109/ICC59461.2026.11587073)
