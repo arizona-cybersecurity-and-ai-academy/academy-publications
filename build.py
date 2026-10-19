@@ -16,6 +16,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections import defaultdict
@@ -29,10 +31,24 @@ TITLE = os.environ.get("PAGE_TITLE", "Arizona Cybersecurity Academy: Publication
 UA = "academy-publications-build/1.0 (mailto:ryanstraight@arizona.edu)"
 
 
-def fetch(url: str) -> tuple[list, dict]:
+def fetch(url: str, attempts: int = 4) -> tuple[list, dict]:
+    """GET a Zotero API page. Zotero occasionally answers 5xx or 429 for a moment, so retry those
+    (honouring Retry-After / Backoff) before failing the build; any other error fails at once."""
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Zotero-API-Version": "3", **({"Zotero-API-Key": API_KEY} if API_KEY else {})})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r), dict(r.headers)
+    for i in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.load(r), dict(r.headers)
+        except urllib.error.HTTPError as e:
+            if i == attempts - 1 or not (e.code == 429 or 500 <= e.code < 600):
+                raise
+            wait = int(e.headers.get("Retry-After") or e.headers.get("Backoff") or 10 * (i + 1))
+        except (urllib.error.URLError, TimeoutError):
+            if i == attempts - 1:
+                raise
+            wait = 10 * (i + 1)
+        print(f"Zotero API error, retrying in {wait}s ({i + 1}/{attempts - 1})", file=sys.stderr)
+        time.sleep(wait)
 
 
 def all_items(collection: str = COLLECTION) -> list[dict]:
