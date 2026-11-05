@@ -386,6 +386,10 @@ def build_grants_md(grants: list[dict]) -> str:
 
 def main() -> int:
     items = all_items()
+    # Publications get the same floor as talks. Ryan, 2026-11-05: the much older work comes off the page; it stays
+    # in the Zotero collection for the record. Raise PUBS_MIN_YEAR to move the floor.
+    pmin = int(os.environ.get("PUBS_MIN_YEAR", "2024"))
+    items = [it for it in items if year_of(it).isdigit() and int(year_of(it)) >= pmin]
     if not items:
         print("no items in collection; writing an empty list", file=sys.stderr)
     overrides = load_overrides()
@@ -427,7 +431,7 @@ def main() -> int:
     print(f"wrote {len(witems)} workshops and presentations")
     # BibTeX exports of both collections, one file each, for anyone citing from the site (Veronika's ask, 2026-09-14).
     with open("docs/academy-output.bib", "w", encoding="utf-8", newline="\n") as f:
-        f.write(all_bibtex())
+        f.write(bibtex_from_year(all_bibtex(), pmin))
     with open("docs/workshops.bib", "w", encoding="utf-8", newline="\n") as f:
         f.write(bibtex_from_year(all_bibtex(wcol), wmin) if wcol else "")
     # "Research by the Numbers": the site cannot compute anything, so the block is generated here from the same
@@ -454,7 +458,7 @@ def main() -> int:
         f.write("\n")
     numbers = (
         '<ul class="academy-numbers">\n'
-        f'  <li><strong>${funding:,.0f}</strong><br>Research Funding</li>\n'
+        f'  <li><strong>${funding:,.0f}</strong><br>Related Research Funding</li>\n'
         f'  <li><strong>{peer}</strong><br>Peer-Reviewed Publications</li>\n'
         f'  <li><strong>{sponsor_count}</strong><br>{html.escape(sponsor_caption)}</li>\n'
         '</ul>\n'
