@@ -1,3 +1,5 @@
+- **2027 Middle School GenCyber Camp at University of Arizona**. National Security Agency. 2026-2028. $90,000. Honomichl, R. (PI); Wagner, P. (Co-PI).
+- **Building Expert AI and Cybersecurity Education Across Our Nation (BEACON)**. National Security Agency. 2026-2029. $740,269. Honomichl, R. (PI); Wagner, P. (Co-PI).
 - **AZ Cyber Pathways Research Practice Partnership**. National Science Foundation. 2025. $279,310. Erwin, C. (PI); Caspary, K. (Co-PI); Wagner, P. (Key Personnel).
 - **CyberAI Curriculum Mapping and CLARK Development**. National Security Agency (via Towson University). 2025. $75,193. Wagner, P. (PI); Honomichl, R., Straight, R., Xu, S., Xu, L. (Co-PIs).
 - **Security Control Assessor and Vulnerability Assessment Analyst work-role training (CyberSkills2Work)**. United States Department of Defense (via University of West Florida). 2025-2028. $311,601. Wagner, P. (PI); Xu, S. (Co-PI).
