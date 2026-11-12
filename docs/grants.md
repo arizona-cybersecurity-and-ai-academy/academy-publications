@@ -2,7 +2,7 @@
 - **Building Expert AI and Cybersecurity Education Across Our Nation (BEACON)**. National Security Agency. 2026-2029. $740,269. Honomichl, R. (PI); Wagner, P. (Co-PI).
 - **AZ Cyber Pathways Research Practice Partnership**. National Science Foundation. 2025. $279,310. Erwin, C. (PI); Caspary, K. (Co-PI); Wagner, P. (Key Personnel).
 - **CyberAI Curriculum Mapping and CLARK Development**. National Security Agency (via Towson University). 2025. $75,193. Wagner, P. (PI); Honomichl, R., Straight, R., Xu, S., Xu, L. (Co-PIs).
-- **Security Control Assessor and Vulnerability Assessment Analyst work-role training (CyberSkills2Work)**. United States Department of Defense (via University of West Florida). 2025-2028. $311,601. Wagner, P. (PI); Xu, S. (Co-PI).
+- **Security Control Assessor and Vulnerability Assessment Analyst work-role training (CyberSkills2Work)**. United States Department of War (via University of West Florida). 2025-2028. $311,601. Wagner, P. (PI); Xu, S. (Co-PI).
 - **Southern Arizona Cybersecurity Workforce Alliance (RAMPS)**. National Institute of Standards and Technology. 2025. $199,100. Felix, M. (PI); Bevington, A., Ball, A. (Co-PIs); Keely, J., Wagner, P. (Key Personnel).
 - **2024 DoD Cyber Scholarship Program and Capacity Building: Security Assessments for Experiential Learning in Ecosystems with Area and Regional Needs (SAFE LEARN)**. National Security Agency. 2024-2026. $342,794. Denno, J. (PI); Lucero, A. (Co-PI); Wagner, P. (Key Personnel, PI SAFE LEARN); Honomichl, R. (Key Personnel, Co-PI SAFE LEARN). $146,760 of the award is allocated to SAFE LEARN.
 - **2024 DoD GenCyber Grant**. National Security Agency (via Dakota State University). 2024-2026. $89,973. Honomichl, R. (PI); Wagner, P. (Co-PI).
