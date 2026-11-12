@@ -443,7 +443,7 @@ def main() -> int:
     # Sponsors of the awarded grants. The hero figure is the COUNT of distinct external sponsors (University of Arizona
     # internal funds excluded); the caption names the ones on the short-name map, ordered by dollars. Ryan, 2026-09-11:
     # a number in the slot for consistency with the other two, the names underneath, federal plus the Arizona partner.
-    named = {"National Science Foundation": "NSF", "National Security Agency": "NSA", "United States Department of Defense": "DoD", "National Institute of Standards and Technology": "NIST", "Center for the Future of Arizona": "the Center for the Future of Arizona", "Department of Homeland Security": "DHS", "Department of Energy": "DOE", "National Institutes of Health": "NIH"}
+    named = {"National Science Foundation": "NSF", "National Security Agency": "NSA", "United States Department of War": "the Department of War", "Google (Tides Foundation)": "Google", "National Institute of Standards and Technology": "NIST", "Center for the Future of Arizona": "the Center for the Future of Arizona", "Department of Homeland Security": "DHS", "Department of Energy": "DOE", "National Institutes of Health": "NIH"}
     by_sponsor: dict[str, float] = defaultdict(float)
     for g in grants:
         sp = str(g.get("sponsor", "")).strip()
